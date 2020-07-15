@@ -3,8 +3,14 @@ import { Router } from '@angular/router';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { STEPPER_GLOBAL_OPTIONS } from '@angular/cdk/stepper';
 import { TranslateService } from '@ngx-translate/core';
+
 import { Participant } from '../../models/participant';
 import { ParticipantService } from '../../services/participant/participant.service';
+
+export enum UserType {
+  AF,
+  HL,
+}
 
 @Component({
   selector: 'app-register',
@@ -19,9 +25,7 @@ import { ParticipantService } from '../../services/participant/participant.servi
 })
 export class RegisterComponent implements OnInit {
   public participant: Participant;
-  UserType = '';
   additionalForm = new FormGroup({
-    // position: new FormControl('', [Validators.required]),
     password: new FormControl('', [Validators.required, Validators.minLength(6)]),
     passwordconfirm: new FormControl('', [Validators.required, Validators.minLength(6)]),
   });
@@ -99,11 +103,6 @@ export class RegisterComponent implements OnInit {
   }
 
   registerParticipant(index: number) {
-    if (index === 0) {
-      this.UserType = 'AF';
-    } else if (index === 1) {
-      this.UserType = 'HL';
-    }
     this.participant = new Participant();
     const participantBasicInformation = this.basicInfoForm.value;
     const participantUserInfo: User = {
@@ -118,7 +117,7 @@ export class RegisterComponent implements OnInit {
         longitude: participantBasicInformation.positionLongitude,
         latitude: participantBasicInformation.positionLatitude,
       },
-      type: this.UserType,
+      type: UserType[index],
       country: participantBasicInformation.country,
       placeId: participantBasicInformation.placeId,
       postCode: participantBasicInformation.postcode,
